@@ -5,17 +5,12 @@ const bodyParser = require("body-parser");
 const indexRouter = require("./routes/index");
 require('dotenv').config()
 const MONGODB_URI_PROD = process.env.MONGODB_URI_PROD;
+const PORT = process.env.PORT || 5050;
 
 //기본 세팅
 const app = express();
 
-// CORS 설정
-const corsOptions = {
-  origin: 'https://todo-ideal.netlify.app', // 허용할 도메인
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use("/api", indexRouter);
@@ -31,6 +26,6 @@ mongoose.connect(mongoURI, { useNewUrlParser: true })
     console.log("DB connection fail", error);
   });
 
-app.listen(5050, () => {
-  console.log("server on 5050");
+app.listen(PORT, () => {
+  console.log(`server on ${PORT}`);
 });
