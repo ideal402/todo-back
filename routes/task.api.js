@@ -10,8 +10,6 @@ router.get('/', taskController.getTask);
 
 router.put('/:id', taskController.updateTask);
 
-router.put('/flag/:id', taskController.flagTask);
-
 router.delete('/:id', taskController.deleteTask);
 
 module.exports = router;

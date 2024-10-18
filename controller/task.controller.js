@@ -25,12 +25,23 @@ taskController.getTask = async (req, res) => {
 taskController.updateTask = async (req,res) => {
     try{
         const taskId = req.params.id;
+        const {complete, flag} = req.body;
+
         if (!taskId){
             return res.status(400).json({status:"fail", error: "Task ID is required"})
         }
-        const task = await Task.findOne({_id:taskId})
+        const task = await Task.findOne({_id:taskId});
 
-        const result = await Task.updateOne({_id:taskId}, {isComplete:!task.isComplete});
+        const updateData = {};
+
+        if (complete){
+            updateData.isComplete = !task.isComplete
+        }
+        if (flag){
+            updateData.isFlag = !task.isFlag;
+        }
+
+        const result = await Task.updateOne({_id:taskId}, updateData);
 
         res.status(200).json({status:'ok', data:result});
 
@@ -39,22 +50,6 @@ taskController.updateTask = async (req,res) => {
     }
 }
 
-taskController.flagTask = async (req,res) => {
-    try{
-        const taskId = req.params.id;
-        if (!taskId){
-            return res.status(400).json({status:"fail", error: "Task ID is required"})
-        }
-        const task = await Task.findOne({_id:taskId})
-
-        const result = await Task.updateOne({_id:taskId}, {isFlag:!task.isFlag});
-
-        res.status(200).json({status:'ok', data:result});
-
-    }catch(err){
-        res.status(400).json({status:'fail', error:err.message});
-    }
-}
 
 taskController.deleteTask = async (req, res) => {
     try{
