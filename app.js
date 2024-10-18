@@ -8,6 +8,13 @@ const MONGODB_URI_PROD = process.env.MONGODB_URI_PROD;
 
 //기본 세팅
 const app = express();
+
+// CORS 설정
+const corsOptions = {
+  origin: 'https://todo-ideal.netlify.app', // 허용할 도메인
+  optionsSuccessStatus: 200,
+};
+
 app.use(cors());
 
 app.use(bodyParser.json());
