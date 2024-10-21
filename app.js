@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use("/api", indexRouter);
 
-// const mongoURI = "mongodb://localhost:27017/todo-demo";
+// const mongoURI = "mongodb://localhost:27017/todo-demo"; 
 const mongoURI = MONGODB_URI_PROD
 
 mongoose.connect(mongoURI, { useNewUrlParser: true })
@@ -27,5 +27,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true })
   });
 
 app.listen(PORT, () => {
-  console.log(`server on ${PORT}`);
-});
+  console.log(`Server is running on http://localhost:${PORT}`);
+}).on('error', (err) => {
+  console.error(`Failed to start the server: ${err.message}`);
+}); 
