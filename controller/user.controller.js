@@ -19,7 +19,7 @@ userController.createUser = async (req,res) => {
         const AlreadyExist = await User.findOne({email})
 
         if (AlreadyExist){
-            throw new Error("This email has already been registered.");
+            throw new Error("이미 가입된 메일 주소입니다.");
         }
 
         const salt = bcrypt.genSaltSync(saltRounds);
@@ -32,7 +32,7 @@ userController.createUser = async (req,res) => {
     }catch(err){
         res.status(400).json({status:"fail", error:err.message})
     }
-}
+} 
 
 userController.login = async (req, res) => {
     try{    
@@ -49,10 +49,10 @@ userController.login = async (req, res) => {
                 return;
             }
         }
-        throw new Error("Your email or password does not match.")
+        throw new Error("이메일 혹은 비밀번호가 일치하지 않습니다.")
     }catch(err){
         res.status(400).json({status:"fail", error:err.message})
-    }
+    } 
 }
 
 userController.getUser = async (req, res) =>{
@@ -67,5 +67,5 @@ userController.getUser = async (req, res) =>{
         res.status(400).json({status:"fail", error:error.message});        
     }
 }
-
+ 
 module.exports = userController
