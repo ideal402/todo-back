@@ -14,6 +14,10 @@ const taskSchema = Schema({
         type:Boolean,
         required: true,
     },
+    author:{type: Schema.Types.ObjectId, 
+        required: true,
+        ref:"User",
+    }
 },{timestamps:true});
 
 
