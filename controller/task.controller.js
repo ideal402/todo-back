@@ -1,75 +1,82 @@
 const Task = require("../model/Task");
 
-const taskController = {}
+const taskController = {};
 
 taskController.createTask = async (req, res) => {
-    try{
-        const {task, isComplete, isFlag} = req.body;
-        const newTask = new Task({task, isComplete, isFlag});
+    try {
+        const { task, isComplete, isFlag } = req.body;
+        const userId = req.userId;
+
+        const newTask = new Task({ task, isComplete, isFlag, author: userId });
         await newTask.save();
-        res.status(200).json({status:'ok', data:newTask});
-    }catch(err){
-        res.status(400).json({status:"fail", error:err});
+        res.status(200).json({ status: "ok", data: newTask });
+    } catch (err) {
+        res.status(400).json({ status: "fail", error: err });
     }
 };
 
 taskController.getTask = async (req, res) => {
-    try{
-        const taskList = await Task.find({}).select("-__v");
-        res.status(200).json({status:'ok', data:taskList});
-    }catch(err){
-        res.status(400).json({status:"fail", error:err});
+    const userId = req.userId;
+
+    try {
+        const taskList = await Task.find({ author: userId })
+            .select("-__v")
+            .populate("author");
+        res.status(200).json({ status: "ok", data: taskList });
+    } catch (err) {
+        res.status(400).json({ status: "fail", error: err });
     }
 };
 
-taskController.updateTask = async (req,res) => {
-    try{
+taskController.updateTask = async (req, res) => {
+    try {
         const taskId = req.params.id;
-        const {complete, flag} = req.body;
+        const { complete, flag } = req.body;
 
-        if (!taskId){
-            return res.status(400).json({status:"fail", error: "Task ID is required"})
+        if (!taskId) {
+            return res
+                .status(400)
+                .json({ status: "fail", error: "Task ID is required" });
         }
-        const task = await Task.findOne({_id:taskId});
+        const task = await Task.findOne({ _id: taskId });
 
         const updateData = {};
 
-        if (complete){
-            updateData.isComplete = !task.isComplete
+        if (complete) {
+            updateData.isComplete = !task.isComplete;
         }
-        if (flag){
+        if (flag) {
             updateData.isFlag = !task.isFlag;
         }
 
-        const result = await Task.updateOne({_id:taskId}, updateData);
+        const result = await Task.updateOne({ _id: taskId }, updateData);
 
-        res.status(200).json({status:'ok', data:result});
-
-    }catch(err){
-        res.status(400).json({status:'fail', error:err.message});
-    }
-}
-
-
-taskController.deleteTask = async (req, res) => {
-    try{
-        const taskId = req.params.id;
-        if (!taskId){
-            return res.status(400).json({status:"fail", error: "Task ID is required"})
-        }
-        const result = await Task.deleteOne({_id:taskId})
-
-        if(result.deleteCount==0){
-            return res.status(404).json({status:"fail", error: "Task Not Found"})
-        }
-        
-        res.status(200).json({status:'ok', data:result});
-    }catch(err){
-        res.status(400).json({status:"fail", error:err.message});
+        res.status(200).json({ status: "ok", data: result });
+    } catch (err) {
+        res.status(400).json({ status: "fail", error: err.message });
     }
 };
 
+taskController.deleteTask = async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        if (!taskId) {
+            return res
+                .status(400)
+                .json({ status: "fail", error: "Task ID is required" });
+        }
+        const result = await Task.deleteOne({ _id: taskId });
 
+        if (result.deletedCount == 0) {
+            return res
+                .status(404)
+                .json({ status: "fail", error: "Task Not Found" });
+        }
 
+        res.status(200).json({ status: "ok", data: result });
+    } catch (err) {
+        res.status(400).json({ status: "fail", error: err.message });
+    }
+};
 
 module.exports = taskController;
