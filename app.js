@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const indexRouter = require("./routes/index");
 require('dotenv').config()
 const MONGODB_URI_PROD = process.env.MONGODB_URI_PROD;
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 5000;
 
 //기본 세팅
 const app = express();
@@ -30,4 +30,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 }).on('error', (err) => {
   console.error(`Failed to start the server: ${err.message}`);
-}); 
+});   
